@@ -53,7 +53,6 @@ struct CardView: View {
             .font(Font.system(size: fontSize(for: size)))
     }
     
-    // MARK: UI Constants
     let cornerRadius: CGFloat = 10.0
     let strokeLineWidth: CGFloat = 3.0
     
