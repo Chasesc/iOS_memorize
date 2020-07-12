@@ -8,8 +8,17 @@
 
 import Foundation
 
-struct MemoryGame<CardContent> {
+struct MemoryGame<CardContent> where CardContent: Equatable {
     var cards: Array<Card>
+    
+    var indexOfFaceUpCard: Int? {
+        get { cards.indices.filter { cards[$0].isFaceUp }.only }
+        set {
+            for index in cards.indices {
+                cards[index].isFaceUp = index == newValue
+            }
+        }
+    }
     
     init(numPairsOfCards: Int, cardContentFactory: (Int) -> CardContent) {
         cards = []
@@ -26,27 +35,23 @@ struct MemoryGame<CardContent> {
     mutating func choose(card: Card) {
         print("card chosen: \(card)")
         
-        guard let index = self.index(of: card) else {
-            print("Bad index of \(card)... how did this happen?")
-            return
-        }
-        
-        self.cards[index].isFaceUp = !card.isFaceUp
-    }
-    
-    func index(of givenCard: Card) -> Int? {
-        for (index, card) in self.cards.enumerated() {
-            if givenCard.id == card.id {
-                return index
+        if let index = cards.firstIndex(matching: card), !cards[index].isFaceUp, !cards[index].isMatched {
+            if let matchIndex = indexOfFaceUpCard {
+                if cards[matchIndex].content == cards[index].content {
+                    cards[index].isMatched = true
+                    cards[matchIndex].isMatched = true
+                }
+                self.cards[index].isFaceUp = true
+            } else {
+                indexOfFaceUpCard = index
             }
         }
-        return nil
     }
     
     struct Card: Identifiable {
         var id: Int
         
-        var isFaceUp: Bool = true
+        var isFaceUp: Bool = false
         var isMatched: Bool = false
         var content: CardContent
     }
