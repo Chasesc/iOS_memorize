@@ -17,7 +17,7 @@ class EmojiMemoryGame: ObservableObject {
         let minCards = 2
         let maxMards = 5
         let numCards = Int.random(in: minCards...maxMards)
-        print("Creating a spooky MemoryGame with \(numCards) cards")
+        print("Creating a spooky MemoryGame with \(numCards) pairs of cards")
         return MemoryGame<String>(numPairsOfCards: numCards) { pairIndex in
             emojis[pairIndex]
         }
